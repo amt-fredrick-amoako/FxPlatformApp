@@ -13,7 +13,7 @@ namespace Entities
         public DateTime DateAndTimeOfOrder { get; set; }
 
         [Range(1, 10000, ErrorMessage = "Value should be {0} minimum and {1} maximum")]
-        public int Quantity { get; set; }
+        public uint Quantity { get; set; }
 
         [Range(1, 10000, ErrorMessage = "Value should be {0} minimum and {1} maximum")]
         public double Price { get; set; }

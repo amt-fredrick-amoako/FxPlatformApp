@@ -7,4 +7,13 @@
     <UserSecretsId>2add8313-f364-4c2e-bc32-c101390ab9cb</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceContracts\ServiceContracts.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Scripts\" />
+  </ItemGroup>
+
 </Project>

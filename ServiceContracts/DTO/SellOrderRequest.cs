@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace ServiceContracts.DTO
 {
@@ -12,10 +13,22 @@ namespace ServiceContracts.DTO
         public DateTime DateAndTimeOfOrder { get; set; }
 
         [Range(1, 10000, ErrorMessage = "Value should be {0} minimum and {1} maximum")]
-        public int Quantity { get; set; }
+        public uint Quantity { get; set; }
 
         [Range(1, 10000, ErrorMessage = "Value should be {0} minimum and {1} maximum")]
         public double Price { get; set; }
+
+        public SellOrder ToSellOrder()
+        {
+            return new SellOrder
+            {
+                StockName = StockName,
+                StockSymbol = StockSymbol,
+                Price = Price,
+                DateAndTimeOfOrder = DateAndTimeOfOrder,
+                Quantity = Quantity
+            };
+        }
 
 
         /// <summary>

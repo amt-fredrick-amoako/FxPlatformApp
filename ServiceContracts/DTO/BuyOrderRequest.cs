@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace ServiceContracts.DTO
 {
@@ -12,7 +13,7 @@ namespace ServiceContracts.DTO
         public DateTime DateAndTimeOfOrder { get; set; }
 
         [Range(1, 10000, ErrorMessage = "Value should be {0} minimum and {1} maximum")]
-        public int Quantity { get; set; }
+        public uint Quantity { get; set; }
 
         [Range(1, 10000, ErrorMessage = "Value should be {0} minimum and {1} maximum")]
         public double Price { get; set; }
@@ -30,6 +31,19 @@ namespace ServiceContracts.DTO
             if (DateAndTimeOfOrder < Convert.ToDateTime("01-01-2000"))
                 results.Add(new ValidationResult("Date of the order should not be older than Jan 01, 2000"));
             return results;
+        }
+
+        public BuyOrder ToBuyOrder()
+        {
+            return new BuyOrder
+            {
+                StockName = StockName,
+                Price = Price,
+                StockSymbol = StockSymbol,
+                DateAndTimeOfOrder = DateAndTimeOfOrder,
+                Quantity = Quantity,
+                
+            };
         }
     }
 }
