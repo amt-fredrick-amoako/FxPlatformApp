@@ -61,12 +61,18 @@ namespace Services
 
         public async Task<List<BuyOrderResponse>> GetBuyOrders()
         {
-            throw new NotImplementedException();
+            return _buyOrders
+                .OrderByDescending(buyOrder => buyOrder.DateAndTimeOfOrder)
+                .Select(buyOrder => buyOrder.ToBuyOrderResponse())
+                .ToList();
         }
 
         public async Task<List<SellOrderResponse>> GetSellOrders()
         {
-            throw new NotImplementedException();
+            return _sellOrders
+                .OrderByDescending(sellOrder => sellOrder.DateAndTimeOfOrder)
+                .Select(sellOrder => sellOrder.ToSellOrderResponse())
+                .ToList();
         }
     }
 }

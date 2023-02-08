@@ -1,7 +1,47 @@
 ﻿@model StockTrade
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Trading";
+    ViewBag.CurrentUrl = "~/Trade/Index";
 }
 
-<h1>Stocks</h1>
+<div class="text-grey ml">
+    <span>Stocks</span>
+    <i class="fa-solid fa-caret-right"></i>
+    <span>@Model.StockName</span>
+</div>
+
+<form method="post">
+
+    <div class="box trading-panel">
+
+        <div class="flex trading-panel-flex">
+
+            <div id="stock-price-panel">
+
+                <div class="stock">
+                    <h1 class="stock-title">@Model.StockName (@Model.StockSymbol)</h1>
+                    <h2 class="stock-price"><small class="text-grey">$</small> <span>@Model.Price.ToString("N")</span></h2>
+                </div>
+
+                <div class="date"></div>
+
+            </div>
+
+            <div id="new-order-panel">
+
+                <div class="flex flex-direction-vertical">
+                    <h3 class="text-grey mb">New Order</h3>
+                    <label class="mt">Quantity:</label>
+                    <div class="w-25">
+                        <input type="number" name="Quantity" value="" class="form-input mb" />
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
