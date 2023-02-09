@@ -32,10 +32,36 @@
 
                 <div class="flex flex-direction-vertical">
                     <h3 class="text-grey mb">New Order</h3>
-                    <label class="mt">Quantity:</label>
+                    <label class="mt" asp-for="Quantity">Quantity:</label>
                     <div class="w-25">
-                        <input type="number" name="Quantity" value="" class="form-input mb" />
+                        <input asp-for="Quantity" min="1" max="10000" required="required" class="form-input mb" autofocus="autofocus" />
                     </div>
+                </div>
+
+                <div class="button-panel">
+
+                    <button type="submit" formaction="~/Trade/SellOrder" class="button button-red-back trading-button sell-button">
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <span>Sell</span>
+                    </button>
+
+                    <button formaction="~/Trade/BuyOrder" class="button button-green-back trading-button buy-button">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <span>Buy</span>
+                    </button>
+
+                    @if (ViewBag.Errors != null)
+                    {
+                        <div class="text-red mt">
+                            <ul>
+                                @foreach (string error in ViewBag.Errors)
+                                {
+                                    <li class="ml">@error</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
                 </div>
 
             </div>
@@ -44,4 +70,14 @@
 
     </div>
 
+    <input type="hidden" asp-for="StockName" />
+    <input type="hidden" asp-for="StockSymbol" />
+    <input type="hidden" asp-for="Price" id="price" />
+    <input type="hidden" id="FinnhubToken" value="@ViewBag.FinnhubToken" />
+
 </form>
+
+@section Scripts {
+    <script src="~/Scripts/FinnhubScripts.js">
+    </script>
+}

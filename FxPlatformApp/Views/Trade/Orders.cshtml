@@ -1,6 +1,68 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Orders
 @{
+    ViewBag.Title = "Orders";
+    ViewBag.CurrentUrl = "~/Trade/Orders";
 }
-<h1>Orders</h1>
+
+<div class="flex">
+
+    <div class="flex-1">
+
+        <div class="text-grey ml">
+            <span>Stocks</span>
+            <i class="fa-solid fa-caret-right"></i>
+            <span>Orders</span>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="flex orders-list">
+    
+    <div class="buy-orders-list">
+
+        <div class="box">
+
+            <h4 class="text-grey mb">Buy Orders</h4>
+            @foreach (BuyOrderResponse buyOrder in Model.BuyOrders)
+            {
+                <div class="border-bottom">
+                    <h3>@buyOrder.StockName (@buyOrder.StockSymbol)</h3>
+                    <h5 class="mb">@buyOrder.Quantity <span class="text-grey">shares at</span>$@buyOrder.Price.ToString("N")</h5>
+                    <h5 class="mb"><span class="text-grey">Trade Amount: </span>$@buyOrder.TradeAmount.ToString("N")</h5>
+                    <h5 class="text-grey">@buyOrder.DateAndTimeOfOrder.ToString("dd MMMM yyyy hh:mm:ss:tt")</h5>
+                </div>
+            }
+
+            @if (Model.BuyOrders.Count == 0)
+            {
+                <div class="mt text-blue"></div>
+            }
+
+        </div>
+
+    </div>
+
+    <div id="sell-orders-list">
+        <div class="box">
+            <h4 class="text-grey mb">Sell Orders</h4>
+            @foreach (SellOrderResponse sellOrder in Model.SellOrders)
+            {
+                <div class="border-bottom">
+                    <h3>@sellOrder.StockName (@sellOrder.StockSymbol)</h3>
+                    <h5 class="mb"><span class="text-grey">Trade Amount:</span>$@sellOrder.TradeAmount.ToString("N")</h5>
+
+                    <h5 class="text-grey">@sellOrder.DateAndTimeOfOrder.ToString("dd MMMM yyyy hh:mm:ss:tt")</h5>
+                </div>
+            }
+
+            @if (Model.SellOrders.Count == 0)
+            {
+                <div class="mt text-blue">No Orders</div>
+            }
+        </div>
+    </div>
+
+</div>
+
