@@ -1,13 +1,12 @@
 using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
-using System.Diagnostics;
+using System.Xml.Linq;
 
-namespace FxPlatformTests
+namespace Tests
 {
     public class StocksServiceTest
     {
-        //private members
         private readonly IStocksService _stocksService;
 
         public StocksServiceTest()
@@ -15,316 +14,334 @@ namespace FxPlatformTests
             _stocksService = new StocksService();
         }
 
-        #region CreateBuyOrderTests
+
+
+        #region CreateBuyOrder
+
+
         [Fact]
-        public void BuyOrderRequest_Is_Null()
+        public void CreateBuyOrder_NullBuyOrder_ToBeArgumentNullException()
         {
             //Arrange
             BuyOrderRequest? buyOrderRequest = null;
+
             //Act
             Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
-                //Assert
-                await _stocksService.CreateBuyOrder(buyOrderRequest);
+              await  _stocksService.CreateBuyOrder(buyOrderRequest);
             });
-
         }
 
-        [Theory]
-        [InlineData(0)]
-        //Throws ArgumentException when buy order quantity is supplied as 0
-        public void BuyOrder_Quantity_is_Zero(uint quantity)
+
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(0)] //passing parameters to the tet method
+        public void CreateBuyOrder_QuantityIsLessThanMinimum_ToBeArgumentException(uint buyOrderQuantity)
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest = new BuyOrderRequest { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = quantity };
+            BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = buyOrderQuantity };
 
             //Act
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                //Assert
-                await _stocksService.CreateBuyOrder(buyOrderRequest);
+               await _stocksService.CreateBuyOrder(buyOrderRequest);
             });
         }
 
-        [Theory]
-        [InlineData(100001)]
-        //Throws ArgumentException when buy order quantity is supplied as 0
-        public void BuyOrder_Quantity_is_Greater_Than_Max(uint quantity)
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(100001)] //passing parameters to the tet method
+        public void CreateBuyOrder_QuantityIsGreaterThanMaximum_ToBeArgumentException(uint buyOrderQuantity)
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest = new BuyOrderRequest { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = quantity };
+            BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = buyOrderQuantity };
 
             //Act
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                //Assert
-                await _stocksService.CreateBuyOrder(buyOrderRequest);
+              await  _stocksService.CreateBuyOrder(buyOrderRequest);
             });
         }
 
-        [Theory]
-        [InlineData(0)]
-        //Throws ArgumentException when buy order price is zero
-        public void BuyOrderPrice_Is_Supplied_As_Zero(uint price)
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(0)] //passing parameters to the tet method
+        public void CreateBuyOrder_PriceIsLessThanMinimum_ToBeArgumentException(uint buyOrderPrice)
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest = new BuyOrderRequest { StockName = "Microsoft", StockSymbol = "MSFT", Price = price, Quantity = 1 };
+            BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = buyOrderPrice, Quantity = 1 };
 
             //Act
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                //Assert
-                await _stocksService.CreateBuyOrder(buyOrderRequest);
-            });
+            Assert.ThrowsAsync<ArgumentException>(async () => { await _stocksService.CreateBuyOrder(buyOrderRequest); });
         }
 
-        [Theory]
-        [InlineData(100001)]
-        public void BuyOrderPrice_Is_Greater_Than_Max(uint price)
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(10001)] //passing parameters to the tet method
+        public void CreateBuyOrder_PriceIsGreaterThanMaximum_ToBeArgumentException(uint buyOrderPrice)
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest = new BuyOrderRequest { StockName = "Microsoft", StockSymbol = "MSFT", Price = price, Quantity = 1 };
+            BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = buyOrderPrice, Quantity = 1 };
 
             //Act
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                //Assert
-                await _stocksService.CreateBuyOrder(buyOrderRequest);
-            });
+            Assert.ThrowsAsync<ArgumentException>(async () => { await _stocksService.CreateBuyOrder(buyOrderRequest); });
         }
+
 
         [Fact]
-        //Throws argument exception when stocksymbol is supplied as null
-        public void BuyOrder_StockSymbol_Is_Supplied_As_Null()
+        public void CreateBuyOrder_StockSymbolIsNull_ToBeArgumentException()
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest = new BuyOrderRequest { StockName = "Microsoft", StockSymbol = null, Price = 1, Quantity = 1 };
+            BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = null, Price = 1, Quantity = 1 };
 
             //Act
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                //Assert
-                await _stocksService.CreateBuyOrder(buyOrderRequest);
-            });
+            Assert.ThrowsAsync<ArgumentException>(async () => { await _stocksService.CreateBuyOrder(buyOrderRequest); });
         }
 
+
         [Fact]
-        //Throws argument exception when date time order is supplied to be older than 2000-01-01
-        public void DateTimeOfOrder_Is_Less_Than_Year_2000()
+        public void CreateBuyOrder_DateOfOrderIsLessThanYear2000_ToBeArgumentException()
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest = new BuyOrderRequest
-            {
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                DateAndTimeOfOrder = Convert.ToDateTime("1999-12-31"),
-                Price = 1,
-                Quantity = 1
-            };
+            BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", DateAndTimeOfOrder = Convert.ToDateTime("1999-12-31"), Price = 1, Quantity = 1 };
 
             //Act
-            Assert.ThrowsAsync<ArgumentException>(
-                async () =>
-                {
-                    //Assert
-                    await _stocksService.CreateBuyOrder(buyOrderRequest);
-                });
-
-
+            Assert.ThrowsAsync<ArgumentException>(async () => { await _stocksService.CreateBuyOrder(buyOrderRequest); });
         }
 
+
         [Fact]
-        public async void Create_Valid_BuyOrder()
+        public async void CreateBuyOrder_ValidData_ToBeSuccessful()
         {
             //Arrange
-            BuyOrderRequest buyOrderRequest = new BuyOrderRequest
-            {
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                DateAndTimeOfOrder = Convert.ToDateTime("2000-12-31"),
-                Price = 1,
-                Quantity = 1
-            };
+            BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", DateAndTimeOfOrder = Convert.ToDateTime("2024-12-31"), Price = 1, Quantity = 1 };
 
             //Act
-            BuyOrderResponse buyOrderResponse = await _stocksService.CreateBuyOrder(buyOrderRequest);
+            BuyOrderResponse buyOrderResponseFromCreate =   await _stocksService.CreateBuyOrder(buyOrderRequest);
 
             //Assert
-            Assert.NotEqual(Guid.Empty, buyOrderResponse.BuyOrderID);
+            Assert.NotEqual(Guid.Empty, buyOrderResponseFromCreate.BuyOrderID);
         }
+
 
         #endregion
 
-        #region CreateSellOrderTests
+
+
+
+        #region CreateSellOrder
+
 
         [Fact]
-        //Throws argumentnull exception when sell order request is supplied as null
-        public void Create_SellOrder_Null_SellOrderRequest()
+        public void CreateSellOrder_NullSellOrder_ToBeArgumentNullException()
         {
             //Arrange
             SellOrderRequest? sellOrderRequest = null;
 
             //Act
-            Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            Assert.ThrowsAsync<ArgumentNullException>( async() =>
             {
-                //Assert
                await _stocksService.CreateSellOrder(sellOrderRequest);
             });
         }
 
-        [Theory]
-        [InlineData(0)]
-        //Throws argument exception when sellOrderQuantity is supplied as 0
-        public void Create_SellOrder_With_SellOrderQuantityAs_0(uint sellOrderQuantity)
-        {
-            //Act
-            SellOrderRequest sellOrderRequest = new()
-            {
-                Quantity = sellOrderQuantity,
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                Price = 1,
-            };
 
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(0)] //passing parameters to the tet method
+        public void CreateSellOrder_QuantityIsLessThanMinimum_ToBeArgumentException(uint sellOrderQuantity)
+        {
             //Arrange
-            Assert.ThrowsAsync<ArgumentException>(async () =>
+            SellOrderRequest? sellOrderRequest = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = sellOrderQuantity };
+
+            //Act
+            Assert.ThrowsAsync<ArgumentException>( async() =>
             {
-                await _stocksService.CreateSellOrder(sellOrderRequest);
+                 await _stocksService.CreateSellOrder(sellOrderRequest);
             });
         }
-        
-        [Theory]
-        [InlineData(100001)]
-        //Throws argument exception when sellOrderQuantity is supplied as 100001
-        public void Create_SellOrder_With_SellOrderQuantity_Greater_Than_Max(uint sellOrderQuantity)
+
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(100001)] //passing parameters to the tet method
+        public void CreateSellOrder_QuantityIsGreaterThanMaximum_ToBeArgumentException(uint sellOrderQuantity)
         {
             //Arrange
-            SellOrderRequest sellOrderRequest = new()
-            {
-                Quantity = sellOrderQuantity,
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                Price = 1,
-            };
+            SellOrderRequest? sellOrderRequest = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = sellOrderQuantity };
 
             //Act
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                //Assert
-                await _stocksService.CreateSellOrder(sellOrderRequest);
+               await _stocksService.CreateSellOrder(sellOrderRequest);
             });
         }
-        
-        [Theory]
-        [InlineData(0)]
-        //Throws argument exception when SellOrderPrice is supplied as 0
-        public void Create_SellOrder_With_SellOrderPrice_Is_0(uint sellOrderPrice)
+
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(0)] //passing parameters to the tet method
+        public void CreateSellOrder_PriceIsLessThanMinimum_ToBeArgumentException(uint sellOrderPrice)
         {
             //Arrange
-            SellOrderRequest sellOrderRequest = new()
-            {
-                Quantity = 1,
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                Price = sellOrderPrice,
-            };
+            SellOrderRequest? sellOrderRequest = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = sellOrderPrice, Quantity = 1 };
 
             //Act
             Assert.ThrowsAsync<ArgumentException>(async () =>
             {
-                //Assert
-                await _stocksService.CreateSellOrder(sellOrderRequest);
+              await  _stocksService.CreateSellOrder(sellOrderRequest);
             });
         }
-        
-        [Theory]
-        [InlineData(100001)]
-        //Throws argument exception when SellOrderPrice is supplied as 100001
-        public void Create_SellOrder_With_SellOrderPrice_Greater_Than_Max(uint sellOrderPrice)
+
+
+        [Theory] //Use [Theory] instead of [Fact]; so that, you can pass parameters to the test method
+        [InlineData(10001)] //passing parameters to the tet method
+        public void CreateSellOrder_PriceIsGreaterThanMaximum_ToBeArgumentException(uint sellOrderPrice)
         {
             //Arrange
-            SellOrderRequest sellOrderRequest = new()
-            {
-                Quantity = 1,
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                Price = sellOrderPrice,
-            };
+            SellOrderRequest? sellOrderRequest = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = sellOrderPrice, Quantity = 1 };
 
             //Act
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                //Assert
-                await _stocksService.CreateSellOrder(sellOrderRequest);
-            });
+            Assert.ThrowsAsync<ArgumentException>(async () => { await _stocksService.CreateSellOrder(sellOrderRequest); });
         }
+
 
         [Fact]
-        //It should throw an ArgumentException error when stock symbol is supplied as null
-        public void CreateSellOrder_With_NullStockSymbol()
+        public void CreateSellOrder_StockSymbolIsNull_ToBeArgumentException()
         {
             //Arrange
-            SellOrderRequest sellOrderRequest = new()
-            {
-                Quantity = 1,
-                StockSymbol = null,
-                StockName = "Microsoft",
-                Price = 1,
-            };
+            SellOrderRequest? sellOrderRequest = new SellOrderRequest() { StockSymbol = null, Price = 1, Quantity = 1 };
 
             //Act
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                //Assert
-                await _stocksService.CreateSellOrder(sellOrderRequest);
-            });
+            Assert.ThrowsAsync<ArgumentException>(async () => { await _stocksService.CreateSellOrder(sellOrderRequest); });
         }
 
-        [Fact]
-        //It should throw ArgumentException when date and time of order is supplied as 1999-12-31
-        public void CreateSellOrder_With_Older_Date_and_Time_Of_Order()
-        {
-            //Arrage
-            SellOrderRequest sellOrderRequest = new()
-            {
-                Quantity = 1,
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                Price = 1,
-                DateAndTimeOfOrder = Convert.ToDateTime("1999-12-31"),
-            };
-
-            //Act
-            Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                //Assert
-                await _stocksService.CreateSellOrder(sellOrderRequest);
-            });
-        }
 
         [Fact]
-        //It should not throw any exception when all values are valid
-        public async void CreateSellOrder_With_Valid_Values()
+        public void CreateSellOrder_DateOfOrderIsLessThanYear2000_ToBeArgumentException()
         {
             //Arrange
-            SellOrderRequest sellOrderRequest = new()
-            {
-                StockSymbol = "MSFT",
-                StockName = "Microsoft",
-                Price = 1,
-                DateAndTimeOfOrder = Convert.ToDateTime("2000-12-31"),
-                Quantity = 1,
-            };
+            SellOrderRequest? sellOrderRequest = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", DateAndTimeOfOrder = Convert.ToDateTime("1999-12-31"), Price = 1, Quantity = 1 };
+
+            //Act
+            Assert.ThrowsAsync<ArgumentException>(async () => { await _stocksService.CreateSellOrder(sellOrderRequest); });
+        }
+
+
+        [Fact]
+        public async void CreateSellOrder_ValidData_ToBeSuccessful()
+        {
+            //Arrange
+            SellOrderRequest? sellOrderRequest = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", DateAndTimeOfOrder = Convert.ToDateTime("2024-12-31"), Price = 1, Quantity = 1 };
+
+            //Act
+            SellOrderResponse sellOrderResponseFromCreate = await _stocksService.CreateSellOrder(sellOrderRequest);
 
             //Assert
-            SellOrderResponse sellOrderResponse = await _stocksService.CreateSellOrder(sellOrderRequest);
-
-            //Act
-            Assert.NotEqual(Guid.Empty, sellOrderResponse.BuyOrderID);
+            Assert.NotEqual(Guid.Empty, sellOrderResponseFromCreate.SellOrderID);
         }
-
 
 
         #endregion
+
+
+
+
+        #region GetBuyOrders
+
+        //The GetAllBuyOrders() should return an empty list by default
+        [Fact]
+        public async void GetAllBuyOrders_DefaultList_ToBeEmpty()
+        {
+            //Act
+            List<BuyOrderResponse> buyOrdersFromGet = await _stocksService.GetBuyOrders();
+
+            //Assert
+            Assert.Empty(buyOrdersFromGet);
+        }
+
+
+        [Fact]
+        public async void GetAllBuyOrders_WithFewBuyOrders_ToBeSuccessful()
+        {
+            //Arrange
+
+            //Create a list of buy orders with hard-coded data
+            BuyOrderRequest buyOrder_request_1 = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = 1, DateAndTimeOfOrder = DateTime.Parse("2023-01-01 9:00") };
+
+            BuyOrderRequest buyOrder_request_2 = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = 1, DateAndTimeOfOrder = DateTime.Parse("2023-01-01 9:00") };
+
+            List<BuyOrderRequest> buyOrder_requests = new List<BuyOrderRequest>() { buyOrder_request_1, buyOrder_request_2 };
+
+            List<BuyOrderResponse> buyOrder_response_list_from_add = new List<BuyOrderResponse>();
+
+            foreach (BuyOrderRequest buyOrder_request in buyOrder_requests)
+            {
+                BuyOrderResponse buyOrder_response = await _stocksService.CreateBuyOrder(buyOrder_request);
+                buyOrder_response_list_from_add.Add(buyOrder_response);
+            }
+
+            //Act
+            List<BuyOrderResponse> buyOrders_list_from_get = await _stocksService.GetBuyOrders();
+
+
+            //Assert
+            foreach (BuyOrderResponse buyOrder_response_from_add in buyOrder_response_list_from_add)
+            {
+                Assert.Contains(buyOrder_response_from_add, buyOrders_list_from_get);
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region GetSellOrders
+
+        //The GetAllSellOrders() should return an empty list by default
+        [Fact]
+        public async void GetAllSellOrders_DefaultList_ToBeEmpty()
+        {
+            //Act
+            List<SellOrderResponse> sellOrdersFromGet = await _stocksService.GetSellOrders();
+
+            //Assert
+            Assert.Empty(sellOrdersFromGet);
+        }
+
+
+        [Fact]
+        public async void GetAllSellOrders_WithFewSellOrders_ToBeSuccessful()
+        {
+            //Arrange
+
+            //Create a list of sell orders with hard-coded data
+            SellOrderRequest sellOrder_request_1 = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = 1, DateAndTimeOfOrder = DateTime.Parse("2023-01-01 9:00") };
+
+            SellOrderRequest sellOrder_request_2 = new SellOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", Price = 1, Quantity = 1, DateAndTimeOfOrder = DateTime.Parse("2023-01-01 9:00") };
+
+            List<SellOrderRequest> sellOrder_requests = new List<SellOrderRequest>() { sellOrder_request_1, sellOrder_request_2 };
+
+            List<SellOrderResponse> sellOrder_response_list_from_add = new List<SellOrderResponse>();
+
+            foreach (SellOrderRequest sellOrder_request in sellOrder_requests)
+            {
+                SellOrderResponse sellOrder_response = await _stocksService.CreateSellOrder(sellOrder_request);
+                sellOrder_response_list_from_add.Add(sellOrder_response);
+            }
+
+            //Act
+            List<SellOrderResponse> sellOrders_list_from_get = await _stocksService.GetSellOrders();
+
+
+            //Assert
+            foreach (SellOrderResponse sellOrder_response_from_add in sellOrder_response_list_from_add)
+            {
+                Assert.Contains(sellOrder_response_from_add, sellOrders_list_from_get);
+            }
+        }
+
+        #endregion
+
     }
 }
+

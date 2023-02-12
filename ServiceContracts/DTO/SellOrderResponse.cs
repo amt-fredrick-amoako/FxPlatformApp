@@ -2,7 +2,7 @@
 {
     public class SellOrderResponse
     {
-        public Guid BuyOrderID { get; set; }
+        public Guid SellOrderID { get; set; }
         public string StockSymbol { get; set; } = string.Empty;
         public string StockName { get; set; } = string.Empty;
         public DateTime DateAndTimeOfOrder { get; set; }
@@ -18,7 +18,7 @@
             if (obj is not SellOrderResponse) return false;
 
             SellOrderResponse response = (SellOrderResponse)obj;
-            return BuyOrderID == response.BuyOrderID
+            return SellOrderID == response.SellOrderID
                 && StockSymbol == response.StockSymbol
                 && StockName == response.StockName
                 && Price == response.Price
@@ -37,7 +37,7 @@
         /// <returns>new string with</returns>
         public override string ToString()
         {
-            return $"Buy Order ID: {BuyOrderID}, " +
+            return $"Buy Order ID: {SellOrderID}, " +
                 $"Stock Symbol {StockSymbol}," +
                 $"Stock Name: {StockName}," +
                 $"Date and Time of Buy Order: {DateAndTimeOfOrder.ToString("dd MMM yyyy hh:mm ss tt")}," +

@@ -36,7 +36,7 @@ namespace ServiceContracts.Extensions
         {
             return new SellOrderResponse
             {
-                BuyOrderID = sellOrder.SellOrderID,
+                SellOrderID = sellOrder.SellOrderID,
                 StockName = sellOrder.StockName,
                 StockSymbol = sellOrder.StockSymbol,
                 DateAndTimeOfOrder = sellOrder.DateAndTimeOfOrder,
