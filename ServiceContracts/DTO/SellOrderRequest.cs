@@ -6,9 +6,9 @@ namespace ServiceContracts.DTO
     public class SellOrderRequest : IValidatableObject
     {
         [Required]
-        public string StockSymbol { get; set; } = string.Empty;
+        public string? StockSymbol { get; set; } = string.Empty;
         [Required]
-        public string StockName { get; set; } = string.Empty;
+        public string? StockName { get; set; } = string.Empty;
 
         public DateTime DateAndTimeOfOrder { get; set; }
 

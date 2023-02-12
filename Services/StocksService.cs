@@ -59,6 +59,16 @@ namespace Services
             return sellOrderResponse;
         }
 
+        public Task<List<BuyOrderResponse>> GetAllBuyOrders()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<BuyOrderResponse>> GetAllSellOrders()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<BuyOrderResponse>> GetBuyOrders()
         {
             return _buyOrders

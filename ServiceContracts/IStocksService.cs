@@ -30,5 +30,13 @@ namespace ServiceContracts
         /// <returns>A list of SellOrderResponse</returns>
         Task<List<SellOrderResponse>> GetSellOrders();
 
+
+        Task<List<BuyOrderResponse>> GetAllBuyOrders();
+
+
+
+        Task<List<BuyOrderResponse>> GetAllSellOrders();
+
+
     }
 }
