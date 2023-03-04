@@ -1,3 +1,5 @@
+using Entities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
@@ -11,7 +13,7 @@ namespace Tests
 
         public StocksServiceTest()
         {
-            _stocksService = new StocksService();
+            _stocksService = new StocksService(new StockMarketDbContext(new DbContextOptionsBuilder<StockMarketDbContext>().Options));
         }
 
 
@@ -111,7 +113,7 @@ namespace Tests
 
 
         [Fact]
-        public async void CreateBuyOrder_ValidData_ToBeSuccessful()
+        public async Task CreateBuyOrder_ValidData_ToBeSuccessful()
         {
             //Arrange
             BuyOrderRequest? buyOrderRequest = new BuyOrderRequest() { StockSymbol = "MSFT", StockName = "Microsoft", DateAndTimeOfOrder = Convert.ToDateTime("2024-12-31"), Price = 1, Quantity = 1 };

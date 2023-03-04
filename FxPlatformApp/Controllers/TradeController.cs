@@ -1,6 +1,8 @@
 ﻿using FxPlatformApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Rotativa.AspNetCore;
+using Rotativa.AspNetCore.Options;
 using ServiceContracts;
 using ServiceContracts.DTO;
 
@@ -159,10 +161,28 @@ namespace FxPlatformApp.Controllers
         }
 
         //TODO Implement method
+        [HttpGet]
         [Route("[action]")]
-        public IActionResult OrdersPDF()
+        public async Task<IActionResult> OrdersPDF()
         {
-            return View();
+            //get list of orders
+            List<IOrderResponse> orders = new List<IOrderResponse>();
+            orders.AddRange(await stocksService.GetBuyOrders());
+            orders.AddRange(await stocksService.GetSellOrders());
+
+            orders = orders.OrderByDescending(order => order.DateAndTimeOfOrder).ToList();
+
+            return new ViewAsPdf("OrdersPDF", orders, ViewData)
+            {
+                PageMargins = new Margins
+                {
+                    Top = 20,
+                    Right = 20,
+                    Left = 20,
+                    Bottom = 20,
+                },
+                PageOrientation = Orientation.Landscape
+            };
         }
     }
 }
