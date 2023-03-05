@@ -1,5 +1,7 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
+using RepositoryContracts;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
@@ -13,7 +15,7 @@ namespace Tests
 
         public StocksServiceTest()
         {
-            _stocksService = new StocksService(new StockMarketDbContext(new DbContextOptionsBuilder<StockMarketDbContext>().Options));
+            _stocksService = new StocksService(new StocksRepository());
         }
 
 

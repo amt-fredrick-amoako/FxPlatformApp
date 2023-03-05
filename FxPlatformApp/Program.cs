@@ -1,6 +1,8 @@
 using Entities;
 using FxPlatformApp;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
+using RepositoryContracts;
 using ServiceContracts;
 using Services;
 
@@ -10,6 +12,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<TradingOptions>(builder.Configuration.GetSection("TradingOptions"));
 builder.Services.AddTransient<IStocksService, StocksService>();
 builder.Services.AddTransient<IFinnhubService, FinnhubService>();
+builder.Services.AddTransient<IStocksRepository, StocksRepository>();
+builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
+
 
 //Add DAL
 builder.Services.AddDbContext<StockMarketDbContext>(options =>
