@@ -17,7 +17,7 @@ builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
 
 
 //Add DAL
-builder.Services.AddDbContext<StockMarketDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -39,3 +39,5 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
 app.Run();
+
+public partial class Program { }

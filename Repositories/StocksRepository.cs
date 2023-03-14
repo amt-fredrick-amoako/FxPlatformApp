@@ -13,9 +13,9 @@ namespace Repositories
 {
     public class StocksRepository : IStocksRepository
     {
-        private readonly StockMarketDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public StocksRepository(StockMarketDbContext context)
+        public StocksRepository(ApplicationDbContext context)
         {
             _db = context;
         }
@@ -36,7 +36,7 @@ namespace Repositories
 
         public async Task<List<BuyOrder>> GetBuyOrders()
         {
-            List<BuyOrder> buyOrders = _db.BuyOrders.OrderByDescending(order => order.DateAndTimeOfOrder).ToList();
+            List<BuyOrder> buyOrders = await _db.BuyOrders.OrderByDescending(order => order.DateAndTimeOfOrder).ToListAsync();
             return buyOrders;
         }
 

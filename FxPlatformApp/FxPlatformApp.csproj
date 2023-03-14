@@ -25,8 +25,12 @@
 
   <ItemGroup>
     <Content Update="wwwroot\Rotativa\wkhtmltopdf.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="FxPlatformTests"/>
+	</ItemGroup>
 
 </Project>

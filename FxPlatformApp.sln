@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceContracts", "Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{40757421-2C3F-4E7F-947E-970DA671C80A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FxPlatformTests", "FxPlatformTests\FxPlatformTests.csproj", "{5E6E9A4B-4205-4060-A854-D33E48B07795}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FxPlatformTests", "FxPlatformTests\FxPlatformTests.csproj", "{5E6E9A4B-4205-4060-A854-D33E48B07795}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryContracts", "RepositoryContracts\RepositoryContracts.csproj", "{795B9929-5310-4C31-B55D-2B18C93A3829}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repositories\Repositories.csproj", "{EDBA824D-B60B-408B-8D83-E9F0F448A095}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{5E6E9A4B-4205-4060-A854-D33E48B07795}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E6E9A4B-4205-4060-A854-D33E48B07795}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E6E9A4B-4205-4060-A854-D33E48B07795}.Release|Any CPU.Build.0 = Release|Any CPU
+		{795B9929-5310-4C31-B55D-2B18C93A3829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{795B9929-5310-4C31-B55D-2B18C93A3829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{795B9929-5310-4C31-B55D-2B18C93A3829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{795B9929-5310-4C31-B55D-2B18C93A3829}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDBA824D-B60B-408B-8D83-E9F0F448A095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDBA824D-B60B-408B-8D83-E9F0F448A095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDBA824D-B60B-408B-8D83-E9F0F448A095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDBA824D-B60B-408B-8D83-E9F0F448A095}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

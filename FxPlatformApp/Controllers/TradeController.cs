@@ -35,24 +35,24 @@ namespace FxPlatformApp.Controllers
             this.tradingOptions = tradingOptions.Value;
         }
 
-        [Route("/")]
-        [Route("[action]")]
-        [Route("~[controller]")]
-        public async Task<IActionResult> Index()
+        //[Route("/")]
+        //[Route("[action]")]
+        [Route("[action]/{stockSymbol}")]
+        public async Task<IActionResult> Index(string stockSymbol)
         {
             //reset symbol if none exists
-            if (string.IsNullOrEmpty(tradingOptions.DefaultStockSymbol))
-                tradingOptions.DefaultStockSymbol = "MSFT";
+            if (string.IsNullOrEmpty(stockSymbol))
+                stockSymbol = "MSFT";
             //get company profile from API server
             Dictionary<string, object>? companyProfileDictionary = await finnhubService
-                .GetCompanyProfile(tradingOptions.DefaultStockSymbol);
+                .GetCompanyProfile(stockSymbol);
 
             //get stock price quotes from API server
             Dictionary<string, object>? stockQuoteDictionary = await finnhubService
-                .GetStockPriceQuote(tradingOptions.DefaultStockSymbol);
+                .GetStockPriceQuote(stockSymbol);
 
             //model object
-            StockTrade stockTrade = new StockTrade { StockSymbol = tradingOptions.DefaultStockSymbol };
+            StockTrade stockTrade = new StockTrade { StockSymbol = stockSymbol };
 
             //load data from finnhubService into model object
             if (companyProfileDictionary != null && stockQuoteDictionary != null)
@@ -74,7 +74,6 @@ namespace FxPlatformApp.Controllers
 
         //TODO Implement method
         [Route("[action]")]
-
         public async Task<IActionResult> Orders()
         {
             //Invoke methods in the stockservice
@@ -181,7 +180,7 @@ namespace FxPlatformApp.Controllers
                     Left = 20,
                     Bottom = 20,
                 },
-                PageOrientation = Orientation.Landscape
+                PageOrientation = Orientation.Portrait
             };
         }
     }
