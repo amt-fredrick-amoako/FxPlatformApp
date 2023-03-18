@@ -10,18 +10,24 @@ namespace FxPlatformApp.ViewComponents
         private readonly TradingOptions _tradingOptions;
         private readonly IFinnhubService _finnhubService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<SelectedStockViewComponent> _logger;
 
-        public SelectedStockViewComponent(IOptions<TradingOptions> options, IFinnhubService finnhubService, IConfiguration configuration)
+        public SelectedStockViewComponent(IOptions<TradingOptions> options, IFinnhubService finnhubService, IConfiguration configuration, ILogger<SelectedStockViewComponent> logger)
         {
             //inject business logic and configuration   
             _tradingOptions = options.Value;
             _finnhubService = finnhubService;
             _configuration = configuration;
+            _logger = logger;
         }
 
 
         public async Task<IViewComponentResult> InvokeAsync(string? stockSymbol)
         {
+            //log viewComponent information
+            _logger.LogInformation("ViewComponent Triggered");
+            _logger.LogInformation("{SelectedStockViewComponent}.{InvokeAsync}", nameof(SelectedStockViewComponent), nameof(InvokeAsync));
+
             //initialize a dictionary
             Dictionary<string, object>? companyProfile = null;
 

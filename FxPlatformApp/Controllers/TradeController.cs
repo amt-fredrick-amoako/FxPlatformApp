@@ -15,6 +15,7 @@ namespace FxPlatformApp.Controllers
         private readonly IStocksService stocksService;
         private readonly IFinnhubService finnhubService;
         private readonly IConfiguration configuration;
+        private readonly ILogger<TradeController> _logger;
 
         /// <summary>
         /// TradeController constructor that executes when a new object is created for
@@ -27,12 +28,14 @@ namespace FxPlatformApp.Controllers
         public TradeController(IStocksService stocksService,
             IFinnhubService finnhubService,
             IConfiguration configuration,
-            IOptions<TradingOptions> tradingOptions)
+            IOptions<TradingOptions> tradingOptions,
+            ILogger<TradeController> logger)
         {
             this.stocksService = stocksService;
             this.finnhubService = finnhubService;
             this.configuration = configuration;
             this.tradingOptions = tradingOptions.Value;
+            _logger = logger;
         }
 
         //[Route("/")]
@@ -40,6 +43,10 @@ namespace FxPlatformApp.Controllers
         [Route("[action]/{stockSymbol}")]
         public async Task<IActionResult> Index(string stockSymbol)
         {
+            //log information
+            _logger.LogInformation("{TradeController}.{Index}", nameof(TradeController), nameof(Index));
+            _logger.LogInformation("In TradeController.Index() action method");
+
             //reset symbol if none exists
             if (string.IsNullOrEmpty(stockSymbol))
                 stockSymbol = "MSFT";

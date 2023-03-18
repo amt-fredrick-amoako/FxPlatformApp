@@ -10,12 +10,14 @@ namespace FxPlatformApp.Controllers
     {
         private readonly IFinnhubService _finnhubService;
         private readonly TradingOptions _tradeOptions;
+        private readonly ILogger<StocksController> _logger;
 
         //DI for services
-        public StocksController(IOptions<TradingOptions> options, IFinnhubService finnhubService)
+        public StocksController(IOptions<TradingOptions> options, IFinnhubService finnhubService, ILogger<StocksController> logger)
         {
             _tradeOptions = options.Value;
             _finnhubService = finnhubService;
+            _logger = logger;
         }
 
         [Route("/")]
@@ -23,6 +25,10 @@ namespace FxPlatformApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Explore(string? stock, bool showAll = false)
         {
+            //log information
+            _logger.LogInformation("In StocksController.Explore() action method");
+            _logger.LogInformation($"stock: {stock}, showAll: {showAll}", stock, showAll);
+
             //get response from API server
             List<Dictionary<string, string>>? stocksDictionary = await _finnhubService.GetStocks();
 
