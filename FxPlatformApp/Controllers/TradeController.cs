@@ -1,4 +1,5 @@
-﻿using FxPlatformApp.Models;
+﻿using FxPlatformApp.Filters;
+using FxPlatformApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Rotativa.AspNetCore;
@@ -98,34 +99,11 @@ namespace FxPlatformApp.Controllers
         //TODO Implement method
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> BuyOrder(BuyOrderRequest buyOrderRequest)
+        [TypeFilter(typeof(CreateOrderActionFilter))]
+        public async Task<IActionResult> BuyOrder(BuyOrderRequest orderRequest)
         {
-            //update date of order
-            buyOrderRequest.DateAndTimeOfOrder = DateTime.Now;
-
-            //validate model after updating the date
-            ModelState.Clear();
-            TryValidateModel(buyOrderRequest);
-
-            //when modelstate is invalid
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Errors = ModelState.Values
-                    .SelectMany(value => value.Errors)
-                    .Select(error => error.ErrorMessage).ToList();
-                StockTrade stockTrade = new StockTrade
-                {
-                    StockName = buyOrderRequest.StockName,
-                    StockSymbol = buyOrderRequest.StockSymbol,
-                    Quantity = buyOrderRequest.Quantity,
-
-                };
-
-                return View("Index", stockTrade);
-            }
-
             //invoke stockservice when modelstate has no errors
-            BuyOrderResponse buyOrderResponse = await stocksService.CreateBuyOrder(buyOrderRequest);
+            BuyOrderResponse buyOrderResponse = await stocksService.CreateBuyOrder(orderRequest);
 
             return RedirectToAction(nameof(Orders));
         }
@@ -133,35 +111,10 @@ namespace FxPlatformApp.Controllers
         //TODO implement method
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> SellOrder(SellOrderRequest sellOrderRequest)
+        [TypeFilter(typeof(CreateOrderActionFilter))]
+        public async Task<IActionResult> SellOrder(SellOrderRequest orderRequest)
         {
-            //initialize the current time of sellOrder
-            sellOrderRequest.DateAndTimeOfOrder = DateTime.Now;
-
-            //validate the model after updating the date time
-            ModelState.Clear();
-            TryValidateModel(sellOrderRequest);
-
-
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Errors = ModelState.Values
-                   .SelectMany(value => value.Errors)
-                   .Select(error => error.ErrorMessage).ToList();
-                StockTrade stockTrade = new StockTrade
-                {
-                    StockName = sellOrderRequest.StockName,
-                    StockSymbol = sellOrderRequest.StockSymbol,
-                    Quantity = sellOrderRequest.Quantity,
-
-                };
-
-                return View("Index", stockTrade);
-
-
-            }
-
-            SellOrderResponse sellOrderResponse = await stocksService.CreateSellOrder(sellOrderRequest);
+            SellOrderResponse sellOrderResponse = await stocksService.CreateSellOrder(orderRequest);
 
             return RedirectToAction(nameof(Orders));
         }
