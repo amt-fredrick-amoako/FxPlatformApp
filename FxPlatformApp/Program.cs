@@ -1,5 +1,6 @@
 using Entities;
 using FxPlatformApp;
+using FxPlatformApp.Middleware;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using RepositoryContracts;
@@ -38,6 +39,7 @@ builder.Services.AddHttpLogging(options =>
 });
 
 builder.Services.AddHttpClient();
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 var app = builder.Build();
 //middlewares
@@ -48,11 +50,17 @@ if (builder.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
+}
 
 //add rotativa
 if (builder.Environment.IsEnvironment("Test") == false)
     Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
 
+app.UseHttpLogging();
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
