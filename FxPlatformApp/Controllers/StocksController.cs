@@ -2,59 +2,60 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ServiceContracts;
+using ServiceContracts.FinnhubService;
 
 namespace FxPlatformApp.Controllers
 {
     [Route("[controller]")]
     public class StocksController : Controller
     {
-        private readonly IFinnhubService _finnhubService;
-        private readonly TradingOptions _tradeOptions;
-        private readonly ILogger<StocksController> _logger;
+        private readonly TradingOptions _tradingOptions;
+        private readonly IFinnhubStocksService _finnhubStocksService;
 
-        //DI for services
-        public StocksController(IOptions<TradingOptions> options, IFinnhubService finnhubService, ILogger<StocksController> logger)
+
+        /// <summary>
+        /// Constructor for TradeController that executes when a new object is created for the class
+        /// </summary>
+        /// <param name="tradingOptions">Injecting TradeOptions config through Options pattern</param>
+        /// <param name="finnhubStocksService">Injecting FinnhubStocksService</param>
+        public StocksController(IOptions<TradingOptions> tradingOptions, IFinnhubStocksService finnhubStocksService)
         {
-            _tradeOptions = options.Value;
-            _finnhubService = finnhubService;
-            _logger = logger;
+            _tradingOptions = tradingOptions.Value;
+            _finnhubStocksService = finnhubStocksService;
         }
 
+
         [Route("/")]
-        [Route("[action]/{stock}")]
-        [HttpGet]
+        [Route("[action]/{stock?}")]
+        [Route("~/[action]/{stock?}")]
         public async Task<IActionResult> Explore(string? stock, bool showAll = false)
         {
-            //log information
-            _logger.LogInformation("In StocksController.Explore() action method");
-            _logger.LogInformation($"stock: {stock}, showAll: {showAll}", stock, showAll);
-
-            //get response from API server
-            List<Dictionary<string, string>>? stocksDictionary = await _finnhubService.GetStocks();
+            //get company profile from API server
+            List<Dictionary<string, string>>? stocksDictionary = await _finnhubStocksService.GetStocks();
 
             List<Stock> stocks = new List<Stock>();
 
-            if (stocksDictionary != null)
-                if (!showAll && _tradeOptions.Top25PopularStocks is not null)
+            if (stocksDictionary is not null)
+            {
+                //filter stocks
+                if (!showAll && _tradingOptions.Top25PopularStocks != null)
                 {
-                    //split strings by the "," delimiter into an array of strings
-                    string[]? Top25PopularStocksList = _tradeOptions.Top25PopularStocks.Split(',');
-
+                    string[]? Top25PopularStocksList = _tradingOptions.Top25PopularStocks.Split(",");
                     if (Top25PopularStocksList is not null)
-                        //check whether Top25PopularStocksList has the stock symbol
+                    {
                         stocksDictionary = stocksDictionary
-                            .Where(stock => Top25PopularStocksList.Contains(Convert.ToString(stock["symbol"])))
-                            .ToList();
+                         .Where(temp => Top25PopularStocksList.Contains(Convert.ToString(temp["symbol"])))
+                         .ToList();
+                    }
                 }
-            //convert dictionary objects into stock objects
-            stocks = stocksDictionary.Select(stock => new Stock() 
-            { 
-                StockName = Convert.ToString(stock["description"]), 
-                StockSymbol = Convert.ToString(stock["symbol"]) 
-            }).ToList();
+
+                //convert dictionary objects into Stock objects
+                stocks = stocksDictionary
+                 .Select(temp => new Stock() { StockName = Convert.ToString(temp["description"]), StockSymbol = Convert.ToString(temp["symbol"]) })
+                .ToList();
+            }
 
             ViewBag.stock = stock;
-
             return View(stocks);
         }
     }

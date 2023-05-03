@@ -2,49 +2,54 @@
 using Microsoft.Extensions.Options;
 using RepositoryContracts;
 using ServiceContracts;
+using ServiceContracts.FinnhubService;
+using ServiceContracts.StocksService;
 
 namespace FxPlatformApp.ViewComponents
 {
     public class SelectedStockViewComponent : ViewComponent
     {
         private readonly TradingOptions _tradingOptions;
-        private readonly IFinnhubService _finnhubService;
+        private readonly IBuyOrdersService _stocksService;
+        private readonly IFinnhubCompanyProfileService _finnhubCompanyProfileService;
+        private readonly IFinnhubStockPriceQuoteService _finnhubStockPriceQuoteService;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<SelectedStockViewComponent> _logger;
 
-        public SelectedStockViewComponent(IOptions<TradingOptions> options, IFinnhubService finnhubService, IConfiguration configuration, ILogger<SelectedStockViewComponent> logger)
+
+        /// <summary>
+        /// Constructor for TradeController that executes when a new object is created for the class
+        /// </summary>
+        /// <param name="tradingOptions">Injecting TradeOptions config through Options pattern</param>
+        /// <param name="stocksService">Injecting StocksService</param>
+        /// <param name="finnhubCompanyProfileService">Injecting finnhubCompanyProfileService</param>
+        /// <param name="finnhubStockPriceQuoteService">Injecting IFinnhubStockPriceQuoteService</param>
+        /// <param name="configuration">Injecting IConfiguration</param>
+        public SelectedStockViewComponent(IOptions<TradingOptions> tradingOptions, IBuyOrdersService stocksService, IFinnhubCompanyProfileService finnhubCompanyProfileService, IFinnhubStockPriceQuoteService finnhubStockPriceQuoteService, IConfiguration configuration)
         {
-            //inject business logic and configuration   
-            _tradingOptions = options.Value;
-            _finnhubService = finnhubService;
+            _tradingOptions = tradingOptions.Value;
+            _stocksService = stocksService;
+            _finnhubCompanyProfileService = finnhubCompanyProfileService;
+            _finnhubStockPriceQuoteService = finnhubStockPriceQuoteService;
             _configuration = configuration;
-            _logger = logger;
         }
 
 
         public async Task<IViewComponentResult> InvokeAsync(string? stockSymbol)
         {
-            //log viewComponent information
-            _logger.LogInformation("ViewComponent Triggered");
-            _logger.LogInformation("{SelectedStockViewComponent}.{InvokeAsync}", nameof(SelectedStockViewComponent), nameof(InvokeAsync));
-
-            //initialize a dictionary
-            Dictionary<string, object>? companyProfile = null;
+            Dictionary<string, object>? companyProfileDict = null;
 
             if (stockSymbol != null)
             {
-                //store response from FinnhubService.GetCompanyProfile into company profile
-                companyProfile = await _finnhubService.GetCompanyProfile(stockSymbol);
-                //store response from FinnhubService.GetCompanyProfile into company profile
-                Dictionary<string, object>? stockPrice = await _finnhubService.GetStockPriceQuote(stockSymbol);
-                if (companyProfile != null && stockPrice != null)
+                companyProfileDict = await _finnhubCompanyProfileService.GetCompanyProfile(stockSymbol);
+                var stockPriceDict = await _finnhubStockPriceQuoteService.GetStockPriceQuote(stockSymbol);
+                if (stockPriceDict != null && companyProfileDict != null)
                 {
-                    companyProfile.Add("price", stockPrice["c"]);
+                    companyProfileDict.Add("price", stockPriceDict["c"]);
                 }
             }
 
-            if (companyProfile != null && companyProfile.ContainsKey("logo"))
-                return View(companyProfile);
+            if (companyProfileDict != null && companyProfileDict.ContainsKey("logo"))
+                return View(companyProfileDict);
             else
                 return Content("");
         }
